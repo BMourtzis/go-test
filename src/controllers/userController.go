@@ -3,7 +3,6 @@ package controller
 import (
 	"beautyproject/services/src/models"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,22 +10,33 @@ import (
 func RegisterUserController(router *gin.Engine) {
 	v1 := router.Group("/v1/user")
 	{
-		v1.GET("", root)
-		v1.GET("/test", testWithParametets)
+		v1.GET("/", get)
+		v1.GET("/:id", getById)
+		v1.POST("/create", create)
 	}
 }
 
-func root(c *gin.Context) {
+func get(c *gin.Context) {
 	c.JSON(http.StatusOK, models.NewUser())
 }
 
-func testWithParametets(c *gin.Context) {
-	age, err := strconv.Atoi(c.DefaultQuery("age", "0"))
-	if err != nil {
-		age = 0
-	}
-	firstName := c.DefaultQuery("firstname", "Bill")
-	lastName := c.DefaultQuery("lastname", "Mourtzis")
+func getById(c *gin.Context) {
+	id := c.Param("id")
 
-	c.JSON(http.StatusOK, models.NewUserWithParameters(firstName, lastName, age))
+	user, err := models.NewUserById(id)
+
+	if err != nil {
+		c.String(http.StatusBadRequest, "")
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+func create(c *gin.Context) {
+	var user models.User
+	c.BindJSON(&user)
+
+	//TODO: add call to service
+
+	c.JSON(http.StatusOK, user)
 }
