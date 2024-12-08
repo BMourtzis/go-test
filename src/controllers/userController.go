@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"beautyproject/services/src/db"
 	"beautyproject/services/src/models"
 	"net/http"
 
@@ -17,7 +18,13 @@ func RegisterUserController(router *gin.Engine) {
 }
 
 func get(c *gin.Context) {
-	c.JSON(http.StatusOK, models.NewUser())
+	users, err := db.ReadUsers()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	c.JSON(http.StatusOK, users)
 }
 
 func getById(c *gin.Context) {
@@ -26,7 +33,7 @@ func getById(c *gin.Context) {
 	user, err := models.NewUserById(id)
 
 	if err != nil {
-		c.String(http.StatusBadRequest, "")
+		c.String(http.StatusBadRequest, err.Error())
 	}
 
 	c.JSON(http.StatusOK, user)
@@ -36,7 +43,11 @@ func create(c *gin.Context) {
 	var user models.User
 	c.BindJSON(&user)
 
-	//TODO: add call to service
+	id, err := db.CreateUser(user)
 
-	c.JSON(http.StatusOK, user)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+	}
+
+	c.JSON(http.StatusOK, id)
 }

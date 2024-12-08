@@ -1,13 +1,7 @@
 package models
 
-import (
-	"errors"
-
-	"github.com/rs/xid"
-)
-
 type User struct {
-	Uid       xid.ID
+	Id        int
 	FirstName string
 	LastName  string
 	Age       int
@@ -15,7 +9,7 @@ type User struct {
 
 func NewUser() User {
 	return User{
-		Uid:       xid.New(),
+		Id:        1,
 		FirstName: "Bill",
 		LastName:  "Mourtzis",
 		Age:       29,
@@ -27,7 +21,7 @@ func NewUserWithParameters(
 	lastName string,
 	age int) User {
 	return User{
-		Uid:       xid.New(),
+		Id:        1,
 		FirstName: firstName,
 		LastName:  lastName,
 		Age:       age,
@@ -36,14 +30,9 @@ func NewUserWithParameters(
 
 func NewUserById(
 	id string) (*User, error) {
-	uid, err := xid.FromString(id)
-
-	if err != nil {
-		return nil, errors.New("incorrect id")
-	}
 
 	return &User{
-		Uid:       uid,
+		Id:        1,
 		FirstName: "Bill",
 		LastName:  "Mourtzis",
 		Age:       29,
