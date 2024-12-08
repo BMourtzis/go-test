@@ -1,8 +1,10 @@
 version: '3.8'
 services:
   web:
-    container_name: go-test
-    build: .
+    container_name: go-test-web
+    build: 
+      context: .
+      dockerfile: ./docker/web.dockerfile
     ports:
       - "8080:8080"
     environment:
@@ -10,7 +12,10 @@ services:
     depends_on:
       - db
   db:
-    image: postgres:latest
+    container_name: go-test-db
+    build:
+      context: .
+      dockerfile: ./docker/db.dockerfile
     restart: always
     env_file:
       - .env
